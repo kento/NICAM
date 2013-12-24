@@ -1,0 +1,477 @@
+ ############################################################
+ #                                                          #
+ #   NICAM : Nonhydrostatic ICosahedal Atmospheric Model    #
+ #                                                          #
+ ############################################################
+
+ +++ Module[adm]/Category[common share]
+&ADMPARAM
+ GLEVEL=          5,
+ RLEVEL=          0,
+ VLAYER=         40,
+ RGNMNGFNAME="rl00-prc10.info                                                                                                                 ",
+ ADM_HGRID_SYSTEM="ICO                                                                                                                             ",
+ ADM_XTMS_K=         -1,
+ ADM_XTMS_MLCP_S=          1,
+ ADM_DEBUG=F,
+ /
+
+ +++ Module[mnginfo]/Category[common share]
+
+ ====== Process management info. ======
+ --- Total number of process           :      10
+ --- My Process rank                   :       7
+ ====== Region/Grid topology info. ======
+ --- Grid sysytem                      : ICO
+ --- #  of diamond                     :      10
+ ====== Region management info. ======
+ --- Region level (RL)                 :       0
+ --- Total number of region            :      10 (   1 x   1 x  10 )
+ --- #  of region per process          :       1
+ --- ID of region in my process        : 
+           7
+ --- Region ID, contains north pole    :       1
+ --- Region ID, contains south pole    :       6
+ --- Process rank, managing north pole :       1
+ --- Process rank, managing south pole :       1
+ ====== Grid management info. ======
+ --- Grid level (GL)                   :       5
+ --- Total number of grid (horizontal) :   10240 (  32 x  32 x     10 )
+ --- Number of vertical layer          :      40
+ ##### start  setup     #####
+
+ +++ Module[cnst]/Category[common share]
+ *** CNSTPARAM is not specified. use default.
+&CNSTPARAM
+ EARTH_RADIUS=  6371000.0000000000     ,
+ EARTH_ANGVEL= 7.29211499999999989E-005,
+ EARTH_GRAVITY=  9.7976399999999995     ,
+ GAS_CNST=  287.04000000000002     ,
+ GAS_CNST_VAP=  461.50000000000000     ,
+ SPECIFIC_HEAT_PRE=  1004.6000000000000     ,
+ SPECIFIC_HEAT_PRE_VAP=  1846.0000000000000     ,
+ LATENT_HEAT_VAP=  2501000.0000000000     ,
+ LATENT_HEAT_SUB=  2834000.0000000000     ,
+ /
+
+ ====== Physical Constants ======
+ --- The circluar constant PI                 :    3.1415926535897931     
+ --- Allowable minimum value                  :   1.00000000000000002E-099
+ --- Allowable maximum value                  :   9.99999999999999967E+098
+ --- Missing value                            :    0.0000000000000000     
+ --- Radius of the Earth                      :    6371000.0000000000     
+ --- Angular velocity of the Earth            :   7.29211499999999989E-005
+ --- Gravitational accerlaration of the Earth :    9.7976399999999995     
+ --- Gas constant of air                      :    287.04000000000002     
+ --- Gas constant of vapor                    :    461.50000000000000     
+ --- Specific heat of air (consant pressure)  :    1004.6000000000000     
+ --- Specific heat of air (consant volume)    :    717.55999999999995     
+ --- Rair/Cp                                  :   0.28572566195500698     
+ --- Surface pressure                         :    101325.00000000000     
+ --- Standard pressure                        :    100000.00000000000     
+ --- Standard temperature                     :    273.14999999999998     
+ --- Standard density                         :    1.2754292533677964     
+ --- Specific heat of vapor (consant pressure):    1846.0000000000000     
+ --- Specific heat of vapor (consant volume)  :    1384.5000000000000     
+ --- Specific heat of water                   :    4218.0000000000000     
+ --- Specific heat of ice                     :    2006.0000000000000     
+ --- Mocular weight                           :   0.62197183098591557     
+ --- 1/epsv-1                                 :   0.60778985507246364     
+ --- Density of water                         :    1000.0000000000000     
+ --- Saturate pressure of water vapor at 0C   :    610.70000000000005     
+ --- Latent heat of vaporizaion at 0C         :    2501000.0000000000     
+ --- Latent heat of vaporizaion at 0K         :    3148911.7999999998     
+ --- Latent heat of sublimation at 0C         :    2834000.0000000000     
+ --- Latent heat of sublimation at 0K         :    2877704.0000000000     
+ --- Latent heat of fusion at 0C              :    333000.00000000000     
+ --- Latent heat of fusion at 0K              :   -271207.79999999993     
+ --- Latent heat of melt                      :    340000.00000000000     
+ --- Melting temperature of water             :    273.14999999999998     
+ --- Freeze point of sea                      :    271.35000000000002     
+ --- Wet-bulb temperature rain/snow           :    273.14999999999998     
+ --- Stefan-Boltzman constant                 :   5.66999999999999982E-008
+ --- Karman constant                          :   0.40000000000000002     
+ --- Cp/Cv                                    :    1.4000222977869448     
+
+ +++ Module[calendar]/Category[common share]
+ *** NM_CALENDAR is not specified. use default.
+&NM_CALENDAR
+ OAUTO=T,
+ OGREGO=T,
+ OIDEAL=F,
+ OPERPT=F,
+ IDAYMO=         30,
+ IMONYR=         12,
+ IYRPP=          0,
+ IMONPP=          3,
+ IDAYPP=         21,
+ ISECMN=         60,
+ IMINHR=         60,
+ IHRDAY=         24,
+ /
+ Msg : Sub[COMM_setup]/Mod[comm]
+  *** No namelist in paramter file.
+  *** Use default values.
+&COMMPARAM
+ MAX_VARMAX=         32,
+ OPT_CHECK_VARMAX=T,
+ OPT_COMM_DBG=F,
+ OPT_COMM_BARRIER=F,
+ /
+
+ +++ Module[grd]/Category[common share]
+&GRDPARAM
+ VGRID_FNAME="vgrid40_24000-600m.dat                                                                                                          ",
+ HGRID_FNAME="boundary_GL05RL00                                                                                                               ",
+ TOPO_FNAME="Jablonowski                                                                                                                     ",
+ TOPOSD_FNAME="                                                                                                                                ",
+ VEGEINDEX_FNAME="                                                                                                                                ",
+ VGRID_SCHEME="LINEAR                          ",
+ H_EFOLD=  10000.000000000000     ,
+ HFLAT= -999.00000000000000     ,
+ OUTPUT_VGRID=F,
+ HGRID_COMM_FLG=T,
+ TRIANGLE_SIZE=  0.0000000000000000     ,
+ GRD_GRID_TYPE="ON_SPHERE                       ",
+ DA_ACCESS_HGRID=F,
+ HGRID_IO_MODE="ADVANCED                        ",
+ TOPO_IO_MODE="LEGACY                          ",
+ /
+ *** [FIO] File registration : READ-           0
+ *** filename: boundary_GL05RL00.pe000006
+ Msg : Sub[GRD_input_topograph]/Mod[grid]
+   *** Topography for JBW: -- MAX:   112.903  MIN:  -315.728
+ Msg : Sub[GRD_input_topograph]/Mod[grid]
+    *** No topographical file. Number :           2
+ Msg : Sub[GRD_input_topograph]/Mod[grid]
+    *** No topographical file. Number :           3
+
+     |======      Vertical Coordinate [m]      ======|
+     |                                               |
+     |          -GRID CENTER-       -GRID INTERFACE- |
+     |  k        gz     d(gz)      gzh    d(gzh)   k |
+     |                                               |
+     | 42   24300.0     600.0                        | dummy
+     |                         24000.0     600.0  42 | TOA
+     | 41   23700.0     600.0                        | kmax
+     |                         23400.0     600.0  41 |
+     | 40   23100.0     600.0                        |
+     |                         22800.0     600.0  40 |
+     | 39   22500.0     600.0                        |
+     |                         22200.0     600.0  39 |
+     | 38   21900.0     600.0                        |
+     |                         21600.0     600.0  38 |
+     | 37   21300.0     600.0                        |
+     |                         21000.0     600.0  37 |
+     | 36   20700.0     600.0                        |
+     |                         20400.0     600.0  36 |
+     | 35   20100.0     600.0                        |
+     |                         19800.0     600.0  35 |
+     | 34   19500.0     600.0                        |
+     |                         19200.0     600.0  34 |
+     | 33   18900.0     600.0                        |
+     |                         18600.0     600.0  33 |
+     | 32   18300.0     600.0                        |
+     |                         18000.0     600.0  32 |
+     | 31   17700.0     600.0                        |
+     |                         17400.0     600.0  31 |
+     | 30   17100.0     600.0                        |
+     |                         16800.0     600.0  30 |
+     | 29   16500.0     600.0                        |
+     |                         16200.0     600.0  29 |
+     | 28   15900.0     600.0                        |
+     |                         15600.0     600.0  28 |
+     | 27   15300.0     600.0                        |
+     |                         15000.0     600.0  27 |
+     | 26   14700.0     600.0                        |
+     |                         14400.0     600.0  26 |
+     | 25   14100.0     600.0                        |
+     |                         13800.0     600.0  25 |
+     | 24   13500.0     600.0                        |
+     |                         13200.0     600.0  24 |
+     | 23   12900.0     600.0                        |
+     |                         12600.0     600.0  23 |
+     | 22   12300.0     600.0                        |
+     |                         12000.0     600.0  22 |
+     | 21   11700.0     600.0                        |
+     |                         11400.0     600.0  21 |
+     | 20   11100.0     600.0                        |
+     |                         10800.0     600.0  20 |
+     | 19   10500.0     600.0                        |
+     |                         10200.0     600.0  19 |
+     | 18    9900.0     600.0                        |
+     |                          9600.0     600.0  18 |
+     | 17    9300.0     600.0                        |
+     |                          9000.0     600.0  17 |
+     | 16    8700.0     600.0                        |
+     |                          8400.0     600.0  16 |
+     | 15    8100.0     600.0                        |
+     |                          7800.0     600.0  15 |
+     | 14    7500.0     600.0                        |
+     |                          7200.0     600.0  14 |
+     | 13    6900.0     600.0                        |
+     |                          6600.0     600.0  13 |
+     | 12    6300.0     600.0                        |
+     |                          6000.0     600.0  12 |
+     | 11    5700.0     600.0                        |
+     |                          5400.0     600.0  11 |
+     | 10    5100.0     600.0                        |
+     |                          4800.0     600.0  10 |
+     |  9    4500.0     600.0                        |
+     |                          4200.0     600.0   9 |
+     |  8    3900.0     600.0                        |
+     |                          3600.0     600.0   8 |
+     |  7    3300.0     600.0                        |
+     |                          3000.0     600.0   7 |
+     |  6    2700.0     600.0                        |
+     |                          2400.0     600.0   6 |
+     |  5    2100.0     600.0                        |
+     |                          1800.0     600.0   5 |
+     |  4    1500.0     600.0                        |
+     |                          1200.0     600.0   4 |
+     |  3     900.0     600.0                        |
+     |                           600.0     600.0   3 |
+     |  2     300.0     600.0                        | kmin
+     |                             0.0     600.0   2 | ground
+     |  1    -300.0     600.0                        | dummy
+     |===============================================|
+
+ --- Vertical layer scheme = LINEAR
+
+ +++ Module[gmtr]/Category[common share]
+ *** GMTRPARAM is not specified. use default.
+&GMTRPARAM
+ POLYGON_TYPE="ON_SPHERE                       ",
+ /
+
+ +++ Module[oprt]/Category[common share]
+ *** setup coefficient of divergence operator
+ *** setup coefficient of gradient operator
+ *** setup coefficient of laplacian operator
+
+ +++ Module[vmtr]/Category[common share]
+ *** VMTRPARAM is not specified. use default.
+&VMTRPARAM
+ DEEP=F,
+ /
+
+ +++ Module[time]/Category[common share]
+&TIMEPARAM
+ INTEG_TYPE="RK3                             ",
+ DTL=  1200.0000000000000     ,
+ LSTEP_MAX=        792,
+ SSTEP_MAX=          6,
+ NUM_OF_INITIAL_STEPS=          1,
+ ALPHA_TIME_FILTER= 5.00000000000000028E-002,
+ SPLIT=T,
+ START_YEAR=       1000,
+ START_MONTH=          1,
+ START_DAY=          1,
+ START_HOUR=          0,
+ START_MIN=          0,
+ START_SEC=          0,
+ /
+
+ ====== Time management ======
+ --- Time integration scheme (large step): RK3
+ --- Time interval for large step        :    1200.0000000000000     
+ --- Time interval for small step        :    200.00000000000000     
+ --- Max steps of large step             :          792
+ --- Max steps of small step             :            6
+ --- Start time (sec)                    :    31536000000.000000     
+ --- End time   (sec)                    :    31536950400.000000     
+ --- Start time (date)                   : 1000/01/01-00:00:00 
+ --- End time   (date)                   : 1000/01/12-00:00:00 
+ --- total integration time              :    950400.00000000000     
+ --- Time step at the start              :            0
+ --- Time step at the end                :          792
+ --- Number of initial steps             :            1
+ --- Time filter for leapfrog            :   5.00000000000000028E-002
+
+ +++ Module[runconf]/Category[nhm share]
+&RUNCONFPARAM
+ RUN_TYPE="Jablonowski                     ",
+ NON_HYDRO_ALPHA=          1,
+ RD_TYPE="NONE                            ",
+ ND_TYPE="NONE                            ",
+ AF_TYPE="NONE                            ",
+ FR_TYPE="NONE                            ",
+ TB_TYPE="NONE                            ",
+ SV_TYPE_T="ISOTHERM                        ",
+ SV_TYPE_QV="DRY                             ",
+ SF_TYPE="NO-FLUX                         ",
+ MP_TYPE="O2001                           ",
+ CP_TYPE="NONE                            ",
+ GWD_TYPE="NONE                            ",
+ LAND_TYPE="BUCKET                          ",
+ OCEAN_TYPE="SST                             ",
+ ROUGHNESS_SEA_TYPE="MILLER                          ",
+ AE_TYPE="NONE                            ",
+ CHEM_TYPE="NONE                            ",
+ RAIN_TYPE="WARM                            ",
+ RAD_TYPE="ISCCP                           ",
+ TRC_ADV_TYPE="MIURA2004                       ",
+ NDIFF_LOCATION="IN_LARGE_STEP2                  ",
+ NDIFF_DIVISION_NUM=          1,
+ RAD_CLOUD_TYPE="DEFAULT                         ",
+ EIN_TYPE="SIMPLE                          ",
+ RAD_GLOBAL_TROPICS=F,
+ CORIOLIS=T,
+ CORIOLIS_PARAM=-9.99000000000000065E+034,
+ RAD_FIX_LON=-9.99000000000000065E+034,
+ RAD_FIX_LAT=-9.99000000000000065E+034,
+ CLEAR_SKY_RAD=F,
+ RAD_DIV_NUM=          1,
+ TRC_NEG_FIX="OFF                             ",
+ OUT_FILE_TYPE="DEFAULT                         ",
+ OPT_OUTPUT_ALL=F,
+ NUM_RESTART=         -1,
+ CDATE_RESTART= 32*"YYYYMMDDHHMMSS",
+ OVERWRITE_RESTART="              ",
+ FLAG_NUDGING=F,
+ OPT_2MOMENT_WATER=F,
+ OPT_INCLOUD_AEROSOL=F,
+ OPT_CARB_ON=T,
+ OPT_DUST_ON=T,
+ OPT_SALT_ON=T,
+ OPT_SULF_ON=T,
+ OPT_AEROSOL_FORCING=F,
+ MP_DIV_NUM=          1,
+ TB_DIV_NUM=          1,
+ SFC_DIV_NUM=          1,
+ PRCIP_TRN_ECORRECT="KIN2KIN                         ",
+ THUBURN_LIM=T,
+ /
+
+ --- Prognostic Tracers
+ |=========================================================|
+ |       :varname         :description                     |
+ |ID=   1:qv              :VAPOR                           |
+ |ID=   2:qc              :CLOUD                           |
+ |ID=   3:qr              :RAIN                            |
+ |=========================================================|
+ Run with \"Thuburn Limiter\" in MIURA2004 Advection
+
+ +++ Module[prgvar]/Category[nhm share]
+&RESTARTPARAM
+ TRC_VMAX_INPUT=          3,
+ INPUT_BASENAME="                                                                                                                                ",
+ OUTPUT_BASENAME="restart_all_GL05RL00z40                                                                                                         ",
+ RESTART_LAYERNAME="ZSALL42                                                                                                                         ",
+ INPUT_IO_MODE="IDEAL                                                                                                                           ",
+ OUTPUT_IO_MODE="ADVANCED                                                                                                                        ",
+ INPUT_DIRECT_ACCESS=T,
+ OUTPUT_DIRECT_ACCESS=T,
+ ALLOW_MISSINGQ=F,
+ OPT_DIAG_QI=F,
+ OPT_QCQI_TO_QV=F,
+ /
+
+ --- Restart treatment for tracers
+ |========================================
+     varname         :read?     :diagnose?
+ --- qv              :T        :F
+ --- qc              :T        :F
+ --- qr              :T        :F
+ *** io_mode for restart, input : IDEAL
+ *** io_mode for restart, output: ADVANCED
+
+ *** read restart/initial data
+ *** make ideal initials
+
+ +++ Module[dycoretest]/Category[nhm share]
+&DYCORETESTPARAM
+ INIT_TYPE="Jablonowski                     ",
+ TEST_CASE="1                               ",
+ /
+ *** type: Jablonowski
+ *** test case: 1
+ Jablonowski Initialize - case 1: with perturbation (no rebalance)
+
+ ====== data range check : diagnostic variables ======
+ --- pre             : max= 9.67586386510145676E+04, min= 2.75063421802813900E+03
+ --- tem             : max= 3.08666465780109661E+02, min= 2.09277285146072416E+02
+ --- vx              : max= 3.49784334544531532E+01, min=-3.49784334544531461E+01
+ --- vy              : max= 3.49706080576186835E+01, min=-3.49706080576185983E+01
+ --- vz              : max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+ --- w               : max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+ --- qv              : max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+ --- qc              : max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+ --- qr              : max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+
+ ====== data range check : prognostic variables ======
+ --- rhog            : max= 1.50262716923620698E+00, min= 3.97096213345742577E-02
+ --- rhogvx          : max= 2.21636967748469083E+01, min=-2.21636967748469083E+01
+ --- rhogvy          : max= 2.21639395725985828E+01, min=-2.21639395725985757E+01
+ --- rhogvz          : max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+ --- rhogw           : max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+ --- rhoge           : max= 2.41883234696390689E+05, min= 6.96666094967250865E+03
+ --- rhog * qv              : max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+ --- rhog * qc              : max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+ --- rhog * qr              : max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+Msg : Sub[diagvar_setup]/Mod[diagvar]
+ DIAG_VMAX   =            1
+ DIAG_VMAX_1LAYER =            0
+ DIAG_VMAX_NLAYER =            0
+ flag_diagset=  T
+               unccn    1
+ Msg : Sub[diagvar_setup]/Mod[diagvar]
+  *** Not found namelist. DIAGVARPARAM
+  *** Use default values.
+&DIAGVARPARAM
+ CBMFX_FNAME="NONE                                                                                                                            ",
+ TB_FNAME="NONE                                                                                                                            ",
+ MP_FNAME="NONE                                                                                                                            ",
+ QV_TB_TEND_FNAME="NONE                                                                                                                            ",
+ EVAP_SFC_FNAME="NONE                                                                                                                            ",
+ SH_FLUX_SFC_FNAME="NONE                                                                                                                            ",
+ ROUGHNESS_SEA_FNAME="NONE                                                                                                                            ",
+ CBMFX_CHIKIRA_FNAME="NONE                                                                                                                            ",
+ INPUT_DIRECT_ACCESS=F,
+ OUTPUT_DIRECT_ACCESS=F,
+ INPUT_IO_MODE="LEGACY                                                                                                                          ",
+ OUTPUT_IO_MODE="LEGACY                                                                                                                          ",
+ RESTART_LAYERNAME="                                                                                                                                ",
+ OUTPUT_BASENAME="                                                                                                                                ",
+ OUTPUT_BASENAME_CBMFX="                                                                                                                                ",
+ OUTPUT_BASENAME_MP="                                                                                                                                ",
+ OUTPUT_BASENAME_QV_TB_TEND="                                                                                                                                ",
+ OUTPUT_BASENAME_EVAP_SFC="                                                                                                                                ",
+ OUTPUT_BASENAME_SH_FLUX_SFC="                                                                                                                                ",
+ OUTPUT_BASENAME_ROUGHNESS_SEA="                                                                                                                                ",
+ OUTPUT_BASENAME_CBMFX_CHIKIRA="                                                                                                                                ",
+ /
+ *** io_mode for restart,input : LEGACY
+ *** io_mode for restart,output: LEGACY
+
+ +++ Module[bndcnd]/Category[nhm share]
+ *** BNDCNDPARAM is not specified. use default.
+&BNDCNDPARAM
+ BND_TYPE_M_TOP="FREE                            ",
+ BND_TYPE_M_BOTTOM="RIGID                           ",
+ BND_TYPE_T_TOP="TEM                             ",
+ BND_TYPE_T_BOTTOM="TEM                             ",
+ /
+ *** Boundary setting type (momentum,    top   ) : free
+ *** Boundary setting type (momentum,    bottom) : rigid
+ *** Boundary setting type (temperature, top   ) : equal to uppermost atmosphere
+ *** Boundary setting type (temperature, bottom) : equal to lowermost atmosphere
+ Msg : Sub[nhm_bs_output_info]/Mod[basicstate]
+  --- Basic state type                : NOBASE
+  --- Reference pressure              :    101325.00000000000     
+  --- Reference temperature           :    300.00000000000000     
+  --- Reference density               :    1.1766652731326643     
+  --- Vaisala frequency               :    0.0000000000000000     
+  --- Lapse rate of temperature       :    0.0000000000000000     
+  --- Effective height                :    0.0000000000000000     
+ -------------------------------------------------------
+ Level   Density  Pressure     Temp. Pot. Tem.        qv
+   1      0.0000      0.00      0.00      0.00 0.0000000
+ -------------------------------------------------------
+   2      0.0000      0.00      0.00      0.00 0.0000000
+   3      0.0000      0.00      0.00      0.00 0.0000000
+   4      0.0000      0.00      0.00      0.00 0.0000000
+   5      0.0000      0.00      0.00      0.00 0.0000000
+   6      0.0000      0.00      0.00      0.00 0.0000000
+   7      0.0000      0.00      0.00      0.00 0.0000000
+   8      0.0000      0.00      0.00      0.00 0.0000000

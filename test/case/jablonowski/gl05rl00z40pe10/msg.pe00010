@@ -1,0 +1,25 @@
+ ############################################################
+ #                                                          #
+ #   NICAM : Nonhydrostatic ICosahedal Atmospheric Model    #
+ #                                                          #
+ ############################################################
+
+ +++ Module[adm]/Category[common share]
+&ADMPARAM
+ GLEVEL=          5,
+ RLEVEL=          0,
+ VLAYER=         40,
+ RGNMNGFNAME="rl00-prc10.info                                                                                                                 ",
+ ADM_HGRID_SYSTEM="ICO                                                                                                                             ",
+ ADM_XTMS_K=         -1,
+ ADM_XTMS_MLCP_S=          1,
+ ADM_DEBUG=F,
+ /
+
+ +++ Module[mnginfo]/Category[common share]
+  xxx No match for  process number! STOP.
+  xxx ADM_prc_all=           11  num_of_proc=          10
+
+ MPI process going to STOP...
+ MPI process has normally finished.
+ ############################################################
