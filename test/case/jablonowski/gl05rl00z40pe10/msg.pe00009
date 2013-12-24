@@ -475,3 +475,179 @@ Msg : Sub[diagvar_setup]/Mod[diagvar]
    6      0.0000      0.00      0.00      0.00 0.0000000
    7      0.0000      0.00      0.00      0.00 0.0000000
    8      0.0000      0.00      0.00      0.00 0.0000000
+   9      0.0000      0.00      0.00      0.00 0.0000000
+  10      0.0000      0.00      0.00      0.00 0.0000000
+  11      0.0000      0.00      0.00      0.00 0.0000000
+  12      0.0000      0.00      0.00      0.00 0.0000000
+  13      0.0000      0.00      0.00      0.00 0.0000000
+  14      0.0000      0.00      0.00      0.00 0.0000000
+  15      0.0000      0.00      0.00      0.00 0.0000000
+  16      0.0000      0.00      0.00      0.00 0.0000000
+  17      0.0000      0.00      0.00      0.00 0.0000000
+  18      0.0000      0.00      0.00      0.00 0.0000000
+  19      0.0000      0.00      0.00      0.00 0.0000000
+  20      0.0000      0.00      0.00      0.00 0.0000000
+  21      0.0000      0.00      0.00      0.00 0.0000000
+  22      0.0000      0.00      0.00      0.00 0.0000000
+  23      0.0000      0.00      0.00      0.00 0.0000000
+  24      0.0000      0.00      0.00      0.00 0.0000000
+  25      0.0000      0.00      0.00      0.00 0.0000000
+  26      0.0000      0.00      0.00      0.00 0.0000000
+  27      0.0000      0.00      0.00      0.00 0.0000000
+  28      0.0000      0.00      0.00      0.00 0.0000000
+  29      0.0000      0.00      0.00      0.00 0.0000000
+  30      0.0000      0.00      0.00      0.00 0.0000000
+  31      0.0000      0.00      0.00      0.00 0.0000000
+  32      0.0000      0.00      0.00      0.00 0.0000000
+  33      0.0000      0.00      0.00      0.00 0.0000000
+  34      0.0000      0.00      0.00      0.00 0.0000000
+  35      0.0000      0.00      0.00      0.00 0.0000000
+  36      0.0000      0.00      0.00      0.00 0.0000000
+  37      0.0000      0.00      0.00      0.00 0.0000000
+  38      0.0000      0.00      0.00      0.00 0.0000000
+  39      0.0000      0.00      0.00      0.00 0.0000000
+  40      0.0000      0.00      0.00      0.00 0.0000000
+  41      0.0000      0.00      0.00      0.00 0.0000000
+ -------------------------------------------------------
+  42      0.0000      0.00      0.00      0.00 0.0000000
+
+ +++ Module[numfilter]/Category[nhm dynamics]
+&NUMFILTERPARAM
+ ALPHA_R=  0.0000000000000000     ,
+ ZD=  25000.000000000000     ,
+ RAYLEIGH_DAMP_ONLY_W=F,
+ HDIFF_TYPE="DIRECT                          ",
+ LAP_ORDER_HDIFF=          2,
+ GAMMA_H=  12900000000000000.     ,
+ TAU_H=  160000.00000000000     ,
+ ZD_HDIFF_NL=  25000.000000000000     ,
+ HDIFF_FACT_RHO= 1.00000000000000002E-002,
+ HDIFF_FACT_Q=  0.0000000000000000     ,
+ KH_COEF_MINLIM=  0.0000000000000000     ,
+ KH_COEF_MAXLIM= 9.90000000000000072E+099,
+ HDIFF_TYPE_LAP1="DIRECT                          ",
+ GAMMA_H_LAP1=  0.0000000000000000     ,
+ TAU_H_LAP1=  160000.00000000000     ,
+ ZD_HDIFF_LAP1=  25000.000000000000     ,
+ GAMMA_V=  0.0000000000000000     ,
+ DIVDAMP_TYPE="DIRECT                          ",
+ LAP_ORDER_DIVDAMP=          2,
+ ALPHA_D=  12900000000000000.     ,
+ TAU_D=  132800.00000000000     ,
+ ALPHA_DV=  0.0000000000000000     ,
+ DIVDAMP_2D_TYPE="NONDIM_COEF                     ",
+ LAP_ORDER_DIVDAMP_2D=          1,
+ ALPHA_D_2D=  0.0000000000000000     ,
+ TAU_D_2D=  1328000.0000000000     ,
+ ZD_D_2D=  25000.000000000000     ,
+ DEP_HGRID=F,
+ SMOOTH_1VAR=T,
+ DEEP_EFFECT=F,
+ DEBUG=F,
+ /
+
+ -----   Rayleigh damping   -----
+ => not used.
+
+ -----   Horizontal numerical diffusion   -----
+ => Nonlinear filter is used.
+
+ -----   Horizontal numerical diffusion (1st order laplacian)   -----
+ => not used.
+
+ -----   Vertical numerical diffusion   -----
+ => not used.
+
+ -----   3D divergence damping   -----
+ => used.
+
+ -----   2D divergence damping   -----
+ => not used.
+
+ +++ Module[embudget]/Category[nhm share]
+&EMBUDGETPARAM
+ MNT_INTV=         72,
+ MNT_ON=T,
+ /
+
+ +++ Module[history]/Category[nhm share]
+&NMHISD
+ OUTPUT_PATH="                                                                                                                                ",
+ HISTALL_FNAME="history                         ",
+ HIST3D_LAYERNAME="ZSDEF40                         ",
+ OUTPUT_IO_MODE="ADVANCED                                                                                                                        ",
+ DIRECT_ACCESS=T,
+ OUTPUT_SIZE=          4,
+ STEP=         72,
+ KTYPE="unknown                         ",
+ KSTR=          1,
+ KEND=         40,
+ KMAX=         40,
+ OUTPUT_TYPE="SNAPSHOT                        ",
+ OUT_PRELEV=F,
+ NO_VINTRPL=F,
+ OPT_WGRID_DEF=F,
+ OPT_LAGINTRPL_DEF=T,
+ NPRESLEV=          1,
+ PRES_LEVS= 60*100000.00000000000       ,
+ CHECK_FLAG=T,
+ DOOUT_STEP0=T,
+ /
+ *** History output type:ADVANCED
+ *** Number of requested history item :           10
+ ##### finish setup     #####
+ ##### start  main loop #####
+ ### TIME =1000/01/01-00:00:00 ( step =            0  )
+ ### TIME =0000/01/01-00:00:00 ( step =            0  )
+
+ *** [HIST] Output item list 
+ *** Total number of requested history item :          10
+ ============================================================================
+ NAME            :Save name       :UNIT            :Avg.type        :interval
+                 :Vert.type       :# of layer      :p?  :z?  :zh? :lag.intrp?
+ ============================================================================
+ ml_u            :u               :NIL             :SNAPSHOT        :      72
+                 :3D              :              40:   F:   T:   F:   T
+ ml_v            :v               :NIL             :SNAPSHOT        :      72
+                 :3D              :              40:   F:   T:   F:   T
+ ml_w            :w               :NIL             :SNAPSHOT        :      72
+                 :3D              :              40:   F:   T:   F:   T
+ ml_pres         :prs             :NIL             :SNAPSHOT        :      72
+                 :3D              :              40:   F:   T:   F:   T
+ ml_tem          :t               :NIL             :SNAPSHOT        :      72
+                 :3D              :              40:   F:   T:   F:   T
+ sl_ps           :ps              :NIL             :SNAPSHOT        :      72
+                 :2D              :               1:   F:   F:   F:   T
+ sl_u850         :u850            :NIL             :SNAPSHOT        :      72
+                 :2D              :               1:   F:   F:   F:   T
+ sl_v850         :v850            :NIL             :SNAPSHOT        :      72
+                 :2D              :               1:   F:   F:   F:   T
+ sl_w850         :w850            :NIL             :SNAPSHOT        :      72
+                 :2D              :               1:   F:   F:   F:   T
+ sl_t850         :t850            :NIL             :SNAPSHOT        :      72
+                 :2D              :               1:   F:   F:   F:   T
+ ============================================================================
+
+ ### HISTORY num_output =           10
+ ###         date-time  = 0000/01/01-00:00:00 
+ [ml_u            ] max= 3.55511487969878033E+01, min= 9.10424645846688386E-75
+ *** [FIO] File registration : WRITE-           1
+ *** filename: history.pe000009
+ [ml_v            ] max= 7.10542735760100186E-15, min=-7.10542735760100186E-15
+ [ml_w            ] max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+ [ml_pres         ] max= 9.67586386510145530E+04, min= 2.75063421802813991E+03
+ [ml_tem          ] max= 3.08666465780109661E+02, min= 2.09277285146072416E+02
+ [sl_ps           ] max= 1.00011896852230930E+05, min= 9.99968866453580413E+04
+ [sl_u850         ] max= 1.65347382896328128E+01, min= 9.10424645846688386E-75
+ [sl_v850         ] max= 1.77635683940025046E-15, min=-1.77635683940025046E-15
+ [sl_w850         ] max= 0.00000000000000000E+00, min= 0.00000000000000000E+00
+ [sl_t850         ] max= 3.01766887217078306E+02, min= 2.23718229218503268E+02
+ ### TIME =0000/01/01-00:20:00 ( step =            1  )
+ ### TIME =0000/01/01-00:40:00 ( step =            2  )
+ ### TIME =0000/01/01-01:00:00 ( step =            3  )
+ ### TIME =0000/01/01-01:20:00 ( step =            4  )
+ ### TIME =0000/01/01-01:40:00 ( step =            5  )
+ ### TIME =0000/01/01-02:00:00 ( step =            6  )
+ ### TIME =0000/01/01-02:20:00 ( step =            7  )
+ ### TIME =0000/01/01-02:40:00 ( step =            8  )
+ ### TIME =0000/01/01-03:00:00 ( step =            9  )

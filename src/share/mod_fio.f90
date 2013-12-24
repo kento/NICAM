@@ -274,6 +274,7 @@ contains
     call fio_seek_datainfo(did,fid,varname,step)
     call fio_get_datainfo(fid,did,dinfo)
 
+
 !    write(ADM_LOG_FID,*) dinfo%varname
 !    write(ADM_LOG_FID,*) dinfo%description
 !    write(ADM_LOG_FID,*) dinfo%unit

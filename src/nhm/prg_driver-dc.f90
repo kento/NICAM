@@ -230,10 +230,10 @@ program prg_driver
 
   write(ADM_LOG_FID,*) '##### start  main loop #####'
   if ( ADM_prc_me == ADM_prc_run_master ) then
-     write(*,*) '##### start  main loopa #####'
+     write(*,*) '##### start  main loop #####',  TIME_LSTEP_MAX
   endif
 
-  print *,"test"
+
 
 
   call TIME_report
@@ -248,17 +248,20 @@ program prg_driver
   endif
 
   do n = 1, TIME_LSTEP_MAX
-
      call DEBUG_rapstart('+Atmos')
      call dynstep
+!     write (0,*) 'kento' , ADM_prc_me, TIME_LSTEP_MAX
+!     stop
+
      call forcing
      call DEBUG_rapend  ('+Atmos')
-
      call DEBUG_rapstart('+History')
      call history_vars
      call TIME_advance
 
+
      !--- budget monitor
+
      call embudget_monitor
      call history_out
 

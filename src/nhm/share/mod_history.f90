@@ -754,6 +754,8 @@ contains
   !----------------------------------------------------------------------------
   subroutine history_out
     use mod_adm, only: &
+       ADM_prc_me,         & !kento added
+       ADM_prc_run_master,  & !kento added
        ADM_proc_stop, &
        ADM_gall,      &
        ADM_gall_pl,   &
@@ -798,12 +800,15 @@ contains
     integer :: g, k, l, n
     !---------------------------------------------------------------------------
 
+
     if ( first ) then
        call history_outlist
        first = .false.
     endif
 
     call calendar_ss2yh( idate, TIME_CTIME )
+
+
 
     ! count up output vars at this time
     out_var(:) = .false.
@@ -826,6 +831,8 @@ contains
           endif
        endif
     enddo
+
+
 
     ! At least one variable will output, do communication
     if ( num_output > 0 ) then 
@@ -894,17 +901,16 @@ contains
 
           write(ADM_LOG_FID,'(A,A16,A,1PE24.17,A,E24.17)') ' [', item(1:16), '] max=', val_max, ', min=', val_min
 
+
           if ( trim(output_io_mode) == 'ADVANCED' ) then
 
              if ( trim(output_type_save(n)) == 'SNAPSHOT' ) then
-
                 call FIO_output( v_save(:,:,:,1),                             &
                                  HIST_io_fname,    HIST_io_desc    , '',      &
                                  file_save(n),     desc_save(n), '',          &
                                  unit_save(n),     HIST_dtype,                &
                                  lname_save(n),    ksumstr(n),   ksumend(n),  &
                                  tmax_save(n),     tend_save(n), tend_save(n) )
-
              elseif(trim(output_type_save(n)) == 'AVERAGE') then
 
                 call FIO_output( v_save(:,:,:,1),                             &
@@ -938,7 +944,6 @@ contains
           tsum_save(n,:) = 0.D0
        endif
     enddo
-
   end subroutine history_out
 
   !-----------------------------------------------------------------------------
