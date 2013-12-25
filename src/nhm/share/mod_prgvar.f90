@@ -55,6 +55,7 @@ module mod_prgvar
 
   public :: restart_input
   public :: restart_output
+  public :: restart_output_checkpoint
 
   !-----------------------------------------------------------------------------
   !
@@ -260,6 +261,7 @@ contains
 
     ! -> [add] H.Yashiro 20110819
     write(ADM_LOG_FID,*) '*** io_mode for restart, input : ', trim(input_io_mode)
+!    write(*,*) '*** io_mode for restart, input : ', trim(input_io_mode)
     if    ( input_io_mode == 'ADVANCED' ) then
     elseif( input_io_mode == 'LEGACY'   ) then
     elseif( input_io_mode == 'IDEAL'    ) then
@@ -269,6 +271,7 @@ contains
     endif
 
     write(ADM_LOG_FID,*) '*** io_mode for restart, output: ', trim(output_io_mode)
+!    write(*,*) '*** io_mode for restart, output : ', trim(output_io_mode)
     if    ( output_io_mode == 'ADVANCED' ) then
     elseif( output_io_mode == 'LEGACY'   ) then
     else
@@ -1643,8 +1646,10 @@ contains
     enddo
 
     ! -> [add] H.Yashiro 20110819
+!    write(*,*) "output_io_mode = ", output_io_mode
     if ( output_io_mode == 'ADVANCED' ) then
 
+!       write(*,*) "basename = ", basename, "desc =", desc
        do nq = 1, DIAG_vmax0
           call FIO_output( DIAG_var(:,:,:,nq), basename, desc, '', DIAG_name(nq), DLABEL(nq), '', DUNIT(nq), &
                            FIO_REAL8, layername, 1, ADM_kall, 1, TIME_CTIME, TIME_CTIME                      )
@@ -1719,6 +1724,185 @@ contains
 
     return
   end subroutine restart_output
+
+  !-----------------------------------------------------------------------------
+  subroutine restart_output_checkpoint( basename )
+    use mod_misc, only: &
+       MISC_get_available_fid, &
+       MISC_make_idstr
+    use mod_adm, only: &
+       ADM_prc_tab, &
+       ADM_prc_me,  &
+       ADM_prc_pl,  &
+       ADM_gall,    &
+       ADM_lall,    &
+       ADM_kall,    &
+       ADM_kmax,    &
+       ADM_kmin
+    use mod_fio, only : & ! [add] H.Yashiro 20110819
+       FIO_output, &
+       FIO_output_checkpoint, &
+       FIO_HSHORT, &
+       FIO_HMID,   &
+       FIO_REAL8
+    use mod_comm, only: &
+       COMM_var
+    use mod_time, only : &
+       TIME_CTIME
+    use mod_gtl, only: &
+       GTL_max, &
+       GTL_min
+    use mod_runconf, only : &
+       TRC_vmax, &
+       TRC_name, &
+       WLABEL
+    implicit none
+
+    character(len=ADM_MAXFNAME), intent(in) :: basename
+
+    character(len=FIO_HMID)   :: desc = 'INITIAL/RESTART_data_of_prognostic_variables' ! [add] H.Yashiro 20110819
+
+    character(len=FIO_HSHORT) :: DLABEL(DIAG_vmax0)
+    data DLABEL / 'Pressure ',        &
+                  'Temperature ',     &
+                  'H-Velocity(XDIR)', &
+                  'H-Velocity(YDIR)', &
+                  'H-Velocity(ZDIR)', &
+                  'V-Velocity '       /
+
+    character(len=FIO_HSHORT) :: DUNIT(DIAG_vmax0)
+    data DUNIT /  'Pa',  &
+                  'K',   &
+                  'm/s', &
+                  'm/s', &
+                  'm/s', &
+                  'm/s'  /
+
+    character(len=FIO_HSHORT) :: WUNIT = 'kg/kg'
+
+    character(len=ADM_MAXFNAME) :: fname
+
+    real(8) :: val_max, val_min
+    logical :: nonzero
+
+    integer :: fid
+    integer :: l, rgnid, nq
+    !---------------------------------------------------------------------------
+
+    call cnvvar_prg2diag( PRG_var (:,:,:,:), PRG_var_pl (:,:,:,:), & !--- [IN]
+                          DIAG_var(:,:,:,:), DIAG_var_pl(:,:,:,:)  ) !--- [OUT]
+
+    write(ADM_LOG_FID,*)
+    write(ADM_LOG_FID,*) '====== data range check : prognostic variables ======'
+    do nq = 1, DIAG_vmax0
+       val_max = GTL_max( DIAG_var   (:,:,:,nq),       &
+                          DIAG_var_pl(:,:,:,nq),       &
+                          ADM_kall, ADM_kmin, ADM_kmax )
+       val_min = GTL_min( DIAG_var   (:,:,:,nq),       &
+                          DIAG_var_pl(:,:,:,nq),       &
+                          ADM_kall, ADM_kmin, ADM_kmax )
+
+       write(ADM_LOG_FID,'(1x,A,A16,2(A,1PE24.17))') '--- ', DIAG_name(nq), ': max=', val_max, ', min=', val_min
+    enddo
+
+    do nq = 1, TRC_vmax
+       val_max = GTL_max( DIAG_var   (:,:,:,DIAG_vmax0+nq), &
+                          DIAG_var_pl(:,:,:,DIAG_vmax0+nq), &
+                          ADM_kall, ADM_kmin, ADM_kmax      )
+
+       if ( val_max <= 0.D0 ) then
+          nonzero = .false.
+       else
+          nonzero = .true.
+       endif
+
+       val_min = GTL_min( DIAG_var   (:,:,:,DIAG_vmax0+nq), &
+                          DIAG_var_pl(:,:,:,DIAG_vmax0+nq), &
+                          ADM_kall, ADM_kmin, ADM_kmax, nonzero)
+
+       write(ADM_LOG_FID,'(1x,A,A16,2(A,1PE24.17))') '--- ', TRC_name(nq),  ': max=', val_max, ', min=', val_min
+    enddo
+
+    ! -> [add] H.Yashiro 20110819
+!    write(*,*) "output_io_mode = ", output_io_mode
+    if ( output_io_mode == 'ADVANCED' ) then
+
+!       write(*,*) "basename = ", basename, "desc =", desc
+
+       do nq = 1, DIAG_vmax0
+          call FIO_output_checkpoint( DIAG_var(:,:,:,nq),            basename, desc, '', DIAG_name(nq), DLABEL(nq), '', DUNIT(nq), &
+                           FIO_REAL8, layername, 1, ADM_kall, 1, TIME_CTIME, TIME_CTIME                      )
+       enddo
+
+       do nq = 1, TRC_vmax
+          call FIO_output_checkpoint( DIAG_var(:,:,:,DIAG_vmax0+nq), basename, desc, '', TRC_name(nq), WLABEL(nq), '', WUNIT, &
+                           FIO_REAL8, layername, 1, ADM_kall, 1, TIME_CTIME, TIME_CTIME                            )
+       enddo
+
+    elseif( output_io_mode == 'LEGACY' ) then
+
+       if ( output_direct_access ) then !--- direct access ( defalut )
+
+          do l = 1, ADM_lall
+             rgnid = ADM_prc_tab(l,ADM_prc_me)
+             call MISC_make_idstr(fname,trim(basename),'rgn',rgnid)
+             fid = MISC_get_available_fid()
+             open( unit   = fid,                 &
+                   file   = trim(fname),         &
+                   form   = 'unformatted',       &
+                   access = 'direct',            &
+                   recl   = ADM_gall*ADM_kall*8, &
+                   status = 'unknown'            )
+
+             do nq = 1, DIAG_vmax
+                write(fid,rec=nq) DIAG_var(:,:,l,nq)
+             enddo
+
+             close(fid)
+          enddo
+
+       else !--- sequential access
+
+          do l = 1, ADM_lall
+             rgnid = ADM_prc_tab(l,ADM_prc_me)
+             call MISC_make_idstr(fname,trim(basename),'rgn',rgnid)
+             fid = MISC_get_available_fid()
+             open( unit   = fid,                 &
+                   file   = trim(fname),         &
+                   form   = 'unformatted',       &
+                   access = 'sequential',        &
+                   status = 'unknown'            )
+
+             do nq = 1, DIAG_vmax
+                write(fid) DIAG_var(:,:,l,nq)
+             enddo
+
+             close(fid)
+          enddo
+
+          if ( ADM_prc_me == ADM_prc_pl ) then
+             fname = trim(basename)//'.pl'
+             fid = misc_get_available_fid()
+             open( unit   = fid,                 &
+                   file   = trim(fname),         &
+                   form   = 'unformatted',       &
+                   access = 'sequential',        &
+                   status = 'unknown'            )
+
+             do nq = 1, DIAG_vmax
+                write(fid) DIAG_var_pl(:,:,:,nq)
+             enddo
+
+             close(fid)
+          endif
+
+       endif !--- direct/sequencial
+
+    endif  !--- io_mode
+    ! <- [add] H.Yashiro 20110819
+
+    return
+  end subroutine restart_output_checkpoint
 
   !-----------------------------------------------------------------------------
   subroutine cnvvar_diag2prg( &

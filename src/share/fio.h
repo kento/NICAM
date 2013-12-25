@@ -66,6 +66,10 @@ typedef struct{
   int32_t step;
   int64_t time_start;
   int64_t time_end;
+  int32_t rank;
+  int32_t i;
+  int32_t j;
+  int32_t k;
 } datainfo_t; 
 
 /* status information */
@@ -212,6 +216,11 @@ extern int32_t fio_valid_pkginfo_validrgn( int32_t fid,
 extern int32_t fio_put_write_datainfo_data( int32_t fid,
                                             datainfo_t ditem,
                                             void *data        );
+
+/** put & write data information and write data for checkpoint ***********************/
+extern int32_t fio_put_write_datainfo_data_checkpoint( int32_t fid,
+						       datainfo_t ditem,
+						       void *data        );
 
 /** put & write data information **************************************/
 extern int32_t fio_put_write_datainfo( int32_t fid,

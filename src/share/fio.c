@@ -356,6 +356,10 @@ int32_t fio_put_datainfo( int32_t fid,
   finfo[fid].dinfo[did].step         = ditem.step;
   finfo[fid].dinfo[did].time_start   = ditem.time_start;
   finfo[fid].dinfo[did].time_end     = ditem.time_end;
+  finfo[fid].dinfo[did].rank         = ditem.rank;
+  finfo[fid].dinfo[did].i         = ditem.i;
+  finfo[fid].dinfo[did].j         = ditem.j;
+  finfo[fid].dinfo[did].k         = ditem.k;
 
   return(SUCCESS_CODE);
 }
@@ -1168,6 +1172,67 @@ int32_t fio_put_write_datainfo_data( int32_t fid,
   did = fio_new_datainfo( fid );
 
   fio_put_datainfo( fid, did, ditem );
+
+  fio_write_pkginfo( fid ); /* update num_of_data */
+  fio_write_datainfo( fid, did );
+  fio_write_data( fid, did, data );
+
+  return(did);
+}
+
+/** put & write data information and write data for checkpoint ***********************/
+/**
+typedef struct{
+  char varname[FIO_HSHORT];
+  char description[FIO_HMID];
+  char unit[FIO_HSHORT];
+  char layername[FIO_HSHORT];
+  char note[FIO_HLONG];
+  int64_t datasize;
+  int32_t datatype;
+  int32_t num_of_layer;
+  int32_t step;
+  int64_t time_start;
+  int64_t time_end;
+  int32_t rank;
+  int32_t i;
+  int32_t j;
+  int32_t k;
+} datainfo_t; 
+ **/
+int32_t fio_put_write_datainfo_data_checkpoint( int32_t fid,
+						datainfo_t ditem,
+						void *data        )
+{
+  int32_t did;
+
+  did = fio_new_datainfo( fid );
+
+  fio_put_datainfo( fid, did, ditem );
+
+  if (finfo[fid].dinfo[did].rank == 1) {
+    printf("checkpoint step %d: "
+	   "variable: %s (%dx%dx%d), "
+           "datatype: %d, (1 = real(8):double precision) " 
+           "size: %d, "
+           "addr: %p, "
+           "unit: %s, "
+	   "note: %s, "
+           "num_of_layer: %d, "
+           "description: %s \n", 
+	   finfo[fid].dinfo[did].step,
+	   finfo[fid].dinfo[did].varname, 
+	   finfo[fid].dinfo[did].i, 
+	   finfo[fid].dinfo[did].j, 
+	   finfo[fid].dinfo[did].k, 
+	   finfo[fid].dinfo[did].datatype, 
+	   finfo[fid].dinfo[did].datasize,
+	   data,
+	   finfo[fid].dinfo[did].unit,
+	   finfo[fid].dinfo[did].note,
+	   finfo[fid].dinfo[did].num_of_layer,
+	   finfo[fid].dinfo[did].description);
+  }
 
   fio_write_pkginfo( fid ); /* update num_of_data */
   fio_write_datainfo( fid, did );

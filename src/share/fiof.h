@@ -133,6 +133,12 @@ extern void fio_put_write_datainfo_data_( int32_t *did,
                                           datainfo_t *ditem,
                                           void *data         );
 
+/** put & write data information and write data for checkpoint  ***********************/
+extern void fio_put_write_datainfo_data_checkpoint_( int32_t *did,
+						     int32_t *fid,
+						     datainfo_t *ditem,
+						     void *data         );
+
 /** put & write data information **************************************/
 extern void fio_put_write_datainfo_( int32_t *did,
                                      int32_t *fid,

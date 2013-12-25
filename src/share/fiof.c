@@ -316,6 +316,19 @@ void fio_put_write_datainfo_data_( int32_t *did,
                                       data    );
 }
 
+/** put & write data information and write data ***********************/
+void fio_put_write_datainfo_data_checkpoint_( int32_t *did,
+					      int32_t *fid,
+					      datainfo_t *ditem,
+					      void *data         )
+{
+  *did = fio_put_write_datainfo_data_checkpoint( *fid,
+						 *ditem,
+						 data    );
+}
+
+
+
 /** put & write data information **************************************/
 void fio_put_write_datainfo_( int32_t *did,
                               int32_t *fid,

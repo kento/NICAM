@@ -98,7 +98,8 @@ program prg_driver
      restart_input_basename,  &
      restart_output_basename, &
      restart_input,           &
-     restart_output
+     restart_output,          &
+     restart_output_checkpoint
   use mod_diagvar, only: &
        diagvar_setup, &
        diagvar_restart_output
@@ -234,8 +235,6 @@ program prg_driver
   endif
 
 
-
-
   call TIME_report
 
   !--- history output at initial time
@@ -247,6 +246,7 @@ program prg_driver
      call history_out
   endif
 
+!  TIME_LSTEP_MAX = 2
   do n = 1, TIME_LSTEP_MAX
      call DEBUG_rapstart('+Atmos')
      call dynstep
@@ -272,6 +272,9 @@ program prg_driver
      endif
      call DEBUG_rapend  ('+History')
 
+     !--- checkpoint
+
+     call restart_output_checkpoint ( restart_output_basename )
   enddo
 
   write(ADM_LOG_FID,*) '##### finish main loop #####'

@@ -32,6 +32,7 @@ module mod_fio
   public :: FIO_input
   public :: FIO_seek
   public :: FIO_output
+  public :: FIO_output_checkpoint
   public :: FIO_finalize
 
   !-----------------------------------------------------------------------------
@@ -108,6 +109,10 @@ module mod_fio
      integer                   :: step
      integer(8)                :: time_start
      integer(8)                :: time_end
+     integer                   :: rank
+     integer                   :: i
+     integer                   :: j
+     integer                   :: k
   endtype datainfo
 
   !-----------------------------------------------------------------------------
@@ -536,6 +541,115 @@ contains
 
     return
   end subroutine FIO_output
+
+  !-----------------------------------------------------------------------------
+  subroutine FIO_output_checkpoint( &
+      var,       &
+      basename,  &
+      pkg_desc,  &
+      pkg_note,  &
+      varname,   &
+      data_desc, &
+      data_note, &
+      unit,      &
+      dtype,     &
+      layername, &
+      k_start,   &
+      k_end,     &
+      step,      &
+      t_start,   &
+      t_end      )
+    use mod_adm, only : &
+      ADM_proc_stop, &
+      ADM_LOG_FID, &
+      ADM_prc_me, &
+      ADM_gall,   &
+      ADM_lall
+    use mod_cnst, only : &
+      CNST_UNDEF4
+    implicit none
+
+    real(8),          intent(in) :: var(:,:,:)
+    character(LEN=*), intent(in) :: basename
+    character(LEN=*), intent(in) :: pkg_desc
+    character(LEN=*), intent(in) :: pkg_note
+    character(LEN=*), intent(in) :: varname
+    character(LEN=*), intent(in) :: data_desc
+    character(LEN=*), intent(in) :: data_note
+    character(LEN=*), intent(in) :: unit
+    integer,          intent(in) :: dtype
+    character(LEN=*), intent(in) :: layername
+    integer,          intent(in) :: k_start, k_end
+    integer,          intent(in) :: step
+    real(8),          intent(in) :: t_start, t_end
+
+    real(4) :: var4(ADM_gall,k_start:k_end,ADM_lall)
+    real(8) :: var8(ADM_gall,k_start:k_end,ADM_lall)
+
+    integer :: did, fid
+    !---------------------------------------------------------------------------
+
+    call DEBUG_rapstart('FILEIO out')
+
+    !--- search/register file
+    call FIO_getfid( fid, basename, FIO_FWRITE, pkg_desc, pkg_note )
+
+    !--- append data to the file
+    dinfo%varname      = varname
+    dinfo%description  = data_desc
+    dinfo%unit         = unit
+    dinfo%layername    = layername
+    dinfo%note         = data_note
+    dinfo%datasize     = int( ADM_gall * ADM_lall * (k_end-k_start+1) * preclist(dtype), kind=8 )
+    dinfo%datatype     = dtype
+    dinfo%num_of_layer = k_end-k_start+1
+    dinfo%step         = step
+    dinfo%time_start   = int( t_start, kind=8 )
+    dinfo%time_end     = int( t_end,   kind=8 )
+    dinfo%rank         = ADM_prc_me
+    dinfo%i            = size(var, 1)
+    dinfo%j            = size(var, 2)
+    dinfo%k            = size(var, 3)
+
+!    write(ADM_LOG_FID,*) dinfo%varname
+!    write(ADM_LOG_FID,*) dinfo%description
+!    write(ADM_LOG_FID,*) dinfo%unit
+!    write(ADM_LOG_FID,*) dinfo%layername
+!    write(ADM_LOG_FID,*) dinfo%note
+!    write(ADM_LOG_FID,*) dinfo%datasize
+!    write(ADM_LOG_FID,*) dinfo%datatype
+!    write(ADM_LOG_FID,*) dinfo%num_of_layer
+!    write(ADM_LOG_FID,*) dinfo%step
+!    write(ADM_LOG_FID,*) dinfo%time_start
+!    write(ADM_LOG_FID,*) dinfo%time_end
+
+
+    If ( dtype == FIO_REAL4 ) then
+
+       var4(:,k_start:k_end,:)=real(var(:,k_start:k_end,:),kind=4)
+
+       where( var4(:,:,:) < (CNST_UNDEF4+1.0) )
+          var4(:,:,:) = CNST_UNDEF4
+       endwhere
+
+       call fio_put_write_datainfo_data_checkpoint(did,fid,dinfo,var4(:,:,:))
+
+    elseif( dtype == FIO_REAL8 ) then
+
+       var8(:,k_start:k_end,:)=var(:,k_start:k_end,:)
+!       if (ADM_prc_me == 1) then
+!          write(*,*) "varname: ", varname, "shape: ", shape(var)       
+!       endif
+       call fio_put_write_datainfo_data_checkpoint(did,fid,dinfo,var8(:,:,:))
+    else
+       write(ADM_LOG_FID,*) 'xxx [OUTPUT]/[FIO] Unsupported datatype!', dtype
+       call ADM_proc_stop
+    endif
+
+    call DEBUG_rapend('FILEIO out')
+
+    return
+  end subroutine FIO_output_checkpoint
 
   !-----------------------------------------------------------------------------
   subroutine FIO_finalize
