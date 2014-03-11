@@ -920,9 +920,9 @@ contains
              !--- vertical kinetic energy
              do ij = 1, ADM_gall_pl
                 ! kento added start
-                !if ( ADM_prc_me == 1 ) then
-                !   write(*,*) rhog_h_pl(ij,k), ADM_prc_pl
-                !endif
+                ! if ( ADM_prc_me == 1 ) then
+                !    write(*,*) rhog_h_pl(ij,k), ADM_prc_pl
+                ! endif
                 ! kento added end
                 rhogkin_v_pl(ij,k) = 0.5D0 * ( rhogw_pl(ij,k,l) * rhogw_pl(ij,k,l) ) / rhog_h_pl(ij,k)
              enddo
